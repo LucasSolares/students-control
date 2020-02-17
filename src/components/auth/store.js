@@ -27,8 +27,27 @@ exports.registerUser = async (userCredential) => {
 exports.loginUser = async (credential) => {
 
     try {
-        const userCorrect = await Model.findOne(credential)
+        const userMatch = Model.findOne(credential)
+        let userCorrect = false
+        if(userMatch) {
+            userCorrect = await userMatch.populate('user').exec()
+        }
         return userCorrect
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+
+}
+
+exports.updateCredentials = async (_id, credentialToUpdate) => {
+
+    try {
+        const credentialUpdated = await Model.findByIdAndUpdate(_id, credentialToUpdate)
+        if(!credentialUpdated) {
+            throw {message: `Credential with id ${_id} not found!`, code: 404}
+        }
+        return credentialUpdated
     } catch (error) {
         console.error(error)
         throw error

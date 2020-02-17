@@ -18,7 +18,7 @@ async function loginUser(email = '', password = '') {
         if(!passwordMatch) {
             throw {message: `Password incorrect`, code: 401}
         }
-        return {token: Auth.generateAndSignToken({sub: userMatch._id, rol: userMatch.rol})}
+        return {token: Auth.generateAndSignToken({sub: userMatch._id, rol: userMatch.rol, user: userMatch.user})}
     } catch (error) {
         console.error(error)
         throw error

@@ -34,10 +34,38 @@ function decodeToken(token) {
     }
 }
 
+function checkOwner(req, _id) {
+    try {
+        const payload = decodeHeaderAuthorization(req)
+        if(!(payload.sub === _id)) {
+            throw {message: 'Is not you!', code: 401}
+        }
+        return payload
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
+
+function decodeHeaderAuthorization(req) {
+    try {
+        const authorization = req.headers.authorization || ''
+        const token = authorization.replace(/['"]+/g, '')      
+        if(!token) {
+            throw {message: 'You dont send any token', code: 401}
+        }
+        return decodeToken(token)
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+
+}
+
 module.exports =
 {
     encryptPassword,
     comparePassword,
     generateAndSignToken,
-    decodeToken,
+    checkOwner,
 }
